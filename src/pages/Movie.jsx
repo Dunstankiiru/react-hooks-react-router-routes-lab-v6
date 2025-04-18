@@ -4,47 +4,33 @@ import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 function Movie() {
-  const { id } = useParams();
-  const [movieData, setMovieData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const [movie, setMovie] = useState({});
+  const params = useParams();
+  const movieId = params.id;
 
   useEffect(() => {
-    fetch("http://localhost:4000/movies")
-      .then((r) => {
-        if (!r.ok) {
-          throw new Error("Failed to fetch movie data");
-        }
-        return r.json();
-      })
-      .then((data) => {
-        setMovieData(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-        setIsLoading(false);
-      });
-  }, []);
+    fetch(`http://localhost:4000/movies/${movieId}`)
+      .then((r) => r.json())
+      .then((data) => setMovie(data))
+      .catch((error) => console.error(error));
+  }, [movieId]);
 
-  const movie = movieData.find((m) => m.id.toString() === id);
-
-  if (isLoading) return <p>Loading movie details...</p>;
-  if (error) return <p>Error: {error.message}</p>; // ✅ this renders the error message string
-  if (!movie) return <p>Movie not found</p>;
-
+  if (!movie.title) {
+    return <h1>Loading...</h1>;
+  }
   return (
     <>
       <header>
-        <NavBar />
+      <NavBar/>
       </header>
       <main>
         <h1>{movie.title}</h1>
         <p>{movie.time}</p>
-        <span>{movie.genres?.join(", ")}</span>
+        <span>{movie.genres}</span>
       </main>
     </>
   );
-}
+};
 
 export default Movie;

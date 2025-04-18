@@ -1,12 +1,9 @@
-
-import React from "react";
-import { useRouteError } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import { useRouteError } from "react-router-dom";
 
-function Error() {
+function ErrorPage() {
   const error = useRouteError();
-
-  console.warn(error);
+  console.error(error);
 
   return (
     <>
@@ -15,17 +12,9 @@ function Error() {
       </header>
       <main>
         <h1>Oops! Looks like something went wrong.</h1>
-        {error && error.message && (
-          <p style={{ color: "red" }}>
-            Error: {error.message}
-          </p>
-        )}
-        {error && error.status && (
-          <p>Status code: {error.status}</p>
-        )}
       </main>
     </>
   );
 }
 
-export default Error;
+export default ErrorPage;
