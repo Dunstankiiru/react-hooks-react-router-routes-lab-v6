@@ -5,12 +5,11 @@ import "./NavBar.css";
 function NavBar() {
   return (
     <nav className="navbar">
-      <NavLink className="navbar" to="/">Home</NavLink>
-      <NavLink className="navbar" to="/actors">Actors</NavLink>
-      <NavLink className="navbar" to="/directors">Directors</NavLink>
-      <NavLink className="navbar" to="/movie">Movie</NavLink>
+      <NavLink to="/">Home</NavLink>
+      <NavLink to="/directors">Directors</NavLink>
+      <NavLink to="/actors">Actors</NavLink>
     </nav>
   );
-};
+}
 
 export default NavBar;
