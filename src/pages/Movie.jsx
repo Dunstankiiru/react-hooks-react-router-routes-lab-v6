@@ -1,50 +1,50 @@
 
 import { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
 import { useParams } from "react-router-dom";
+import NavBar from "../components/NavBar";
 
 function Movie() {
-  const [movie, setMovie] = useState({})
+  const { id } = useParams();
+  const [movieData, setMovieData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const params = useParams();
-  const id = params.id
-  let genres = movie.genres
-  console.log(id)
-  useEffect(()=>{
-    fetch(`http://localhost:4000/movies/${id}`)
-    .then(r => r.json())
-    .then((data) => setMovie(data))
-    .catch(e=> console.error("when i catch you",e))  
-  },[])
-  if(!genres){
-    return <h1>Loading...</h1>
-  }
+  useEffect(() => {
+    fetch("http://localhost:4000/movies")
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error("Failed to fetch movie data");
+        }
+        return r.json();
+      })
+      .then((data) => {
+        setMovieData(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const movie = movieData.find((m) => m.id.toString() === id);
+
+  if (isLoading) return <p>Loading movie details...</p>;
+  if (error) return <p>Error: {error.message}</p>; // ✅ this renders the error message string
+  if (!movie) return <p>Movie not found</p>;
 
   return (
     <>
       <header>
-        {/* What component should go here? */}
-        <NavBar/>
+        <NavBar />
       </header>
       <main>
-        {/* Movie info here! */}
         <h1>{movie.title}</h1>
         <p>{movie.time}</p>
-        {!genres ? 
-        <p>Loading...</p> :
-        genres.map((genre, index)=>{
-            return <span key={index}>{genre}</span>
-        })
-        }
-        {/* 
-        {
-         genres.map((genre, index)=>{
-            return <span key={index}>{genre}</span>
-          })
-        } */}
+        <span>{movie.genres?.join(", ")}</span>
       </main>
     </>
   );
-};
+}
 
 export default Movie;
